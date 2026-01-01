@@ -1,0 +1,30 @@
+# docker-compose.yaml
+services:
+  react-todo:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      target: builder
+    container_name: react-todo
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    # 開発環境用にボリュームをマウント（ホットリロードのため推奨）
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:5173" 
+    environment:
+      - CHOKIDAR_USEPOLLING=true 
+    restart: unless-stopped
+
+  gin-todo:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: gin-todo
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8080" 
